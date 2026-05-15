@@ -1,0 +1,4 @@
+# Barrier Remote Control - Arquivos gerados automaticamente
+*.log
+*.pem
+BarrierTemp/

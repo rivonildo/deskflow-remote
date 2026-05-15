@@ -1,0 +1,33 @@
+section: screens
+	DESKTOP-M1PCNBO:
+		halfDuplexCapsLock = false
+		halfDuplexNumLock = false
+		halfDuplexScrollLock = false
+		switchCorners = none
+		switchCornerSize = 0
+	DESKTOP-E2MKULO:
+		halfDuplexCapsLock = false
+		halfDuplexNumLock = false
+		halfDuplexScrollLock = false
+		switchCorners = none
+		switchCornerSize = 0
+end
+
+section: aliases
+end
+
+section: links
+	DESKTOP-M1PCNBO:
+		right = DESKTOP-E2MKULO
+	DESKTOP-E2MKULO:
+		left = DESKTOP-M1PCNBO
+end
+
+section: options
+	relativeMouseMoves = false
+	screenSaverSync = true
+	win32KeepForeground = false
+	clipboardSharing = true
+	switchCorners = none
+	switchCornerSize = 0
+end
