@@ -1,78 +1,78 @@
 # 🖥️ Barrier Remote Control via Tailscale
 
-Controle o teclado e mouse de um notebook remotamente usando **Barrier** (open source) e **Tailscale** (VPN mesh).
+Controle o teclado e mouse de um notebook remotamente — **100% automático, zero configuração**.
 
-## 📋 Visão Geral
+## 🚀 Como Usar
 
-| Componente | Descrição |
+### PC A (Servidor — o que controla)
+```powershell
+# Clique direito no setup_server.ps1 → "Executar com PowerShell"
+# Ou abra PowerShell como Admin e rode:
+powershell -ExecutionPolicy Bypass -File setup_server.ps1
+```
+
+### PC B (Cliente — o que é controlado)
+```powershell
+# Clique direito no setup_client.ps1 → "Executar com PowerShell"
+# Ou abra PowerShell como Admin e rode:
+powershell -ExecutionPolicy Bypass -File setup_client.ps1
+```
+
+**Pronto!** Os scripts fazem tudo sozinhos. 🎉
+
+## ✨ O que os scripts fazem automaticamente
+
+| Etapa | Descrição |
 |---|---|
-| **Barrier** | Software open source de compartilhamento de teclado/mouse (fork do Synergy) |
-| **Tailscale** | VPN mesh peer-to-peer que cria rede privada entre dispositivos |
-| **PC A (Servidor)** | Controla o teclado/mouse — envia inputs |
-| **PC B (Cliente)** | Recebe os inputs do PC A |
+| 📦 **Instala Barrier** | Baixa e instala silenciosamente se não existir |
+| 🔗 **Instala Tailscale** | Baixa e instala silenciosamente se não existir |
+| 🔑 **Login Tailscale** | Abre navegador automaticamente para autenticação |
+| 🔍 **Descobre peers** | Encontra o outro PC na rede Tailscale automaticamente |
+| 🎯 **Encontra servidor** | Cliente escaneia porta 24800 nos peers para achar o servidor |
+| 🛡️ **Configura firewall** | Abre porta 24800 automaticamente |
+| 🔒 **Gera SSL** | Cria certificados automaticamente |
+| ⚙️ **Configura telas** | Cria layout de telas baseado nos hostnames detectados |
+| 🔄 **Reconecta** | Se a conexão cair, reconecta automaticamente |
+| 📊 **Monitora** | Exibe status em tempo real no terminal |
 
 ## 🏗️ Arquitetura
 
 ```
 ┌──────────────────┐      Tailscale VPN       ┌──────────────────┐
 │   PC A (Servidor)│◄────────────────────────►│   PC B (Cliente) │
-│   DESKTOP-M1PCNBO│      100.122.131.29      │  DESKTOP-E2MKULO │
-│                  │         :24800            │  100.117.172.86  │
+│  setup_server.ps1│      WireGuard           │ setup_client.ps1 │
+│                  │         :24800            │                  │
 │  barriers.exe    │◄─── TCP connection ──────│  barrierc.exe    │
 │  (envia input)   │                          │  (recebe input)  │
 └──────────────────┘                          └──────────────────┘
 ```
 
-## 🚀 Instalação Rápida
+## 📋 Requisitos
 
-### Pré-requisitos
 - Windows 10/11
-- [Barrier 2.4.0](https://github.com/debauchee/barrier/releases/download/v2.4.0/BarrierSetup-2.4.0-release.exe)
-- [Tailscale](https://tailscale.com/download/windows)
+- Conexão com internet (para download e Tailscale)
+- Mesma conta Tailscale nos dois PCs
 
-### No PC A (Servidor/Controlador)
-```powershell
-# Abra o PowerShell como Administrador
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-.\setup_server.ps1
-```
-
-### No PC B (Cliente/Controlado)
-```powershell
-# Abra o PowerShell como Administrador
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-.\setup_client.ps1
-```
-
-## ⚙️ Configuração
-
-Edite os parâmetros no início de cada script conforme sua rede:
-
-| Parâmetro | Descrição | Padrão |
-|---|---|---|
-| `$ServerName` | Hostname do PC servidor | `DESKTOP-M1PCNBO` |
-| `$ClientName` | Hostname do PC cliente | `DESKTOP-E2MKULO` |
-| `$ServerTailscaleIP` | IP Tailscale do servidor | `100.122.131.29` |
-| `$BarrierPort` | Porta do Barrier | `24800` |
-
-## 📁 Estrutura do Projeto
-
-```
-barrier-remote-control/
-├── README.md              # Este arquivo
-├── REPORT.md              # Relatório técnico completo
-├── setup_server.ps1       # Script automático para PC A
-├── setup_client.ps1       # Script automático para PC B
-└── config/
-    └── barrier.sgc        # Configuração de telas do Barrier
-```
+> **Não precisa instalar nada manualmente!** Os scripts instalam Barrier e Tailscale automaticamente.
 
 ## 🔒 Segurança
 
-- O tráfego é criptografado pelo **Tailscale** (WireGuard)
-- SSL do Barrier desabilitado (redundante sobre Tailscale)
-- Funciona entre redes diferentes (NAT traversal via Tailscale)
+- Tráfego criptografado via **Tailscale/WireGuard**
+- Nenhuma porta exposta à internet
+- Funciona entre redes diferentes (NAT traversal)
+
+## 📁 Arquivos
+
+```
+barrier-remote-control/
+├── README.md           ← Este arquivo
+├── REPORT.md           ← Relatório técnico
+├── setup_server.ps1    ← Script do servidor (PC A)
+├── setup_client.ps1    ← Script do cliente (PC B)
+└── config/
+    └── barrier.sgc     ← Config de referência
+```
 
 ## 📄 Licença
 
-MIT License
+MIT
