@@ -1,4 +1,15 @@
-# Barrier Remote Control - Arquivos gerados automaticamente
+# Generated and sensitive deployment state
 *.log
 *.pem
-BarrierTemp/
+*.key
+*.crt
+*.pfx
+*.p12
+*.token
+.env
+.env.*
+!.env.example
+config.local.*
+install-state.json
+.DS_Store
+Thumbs.db

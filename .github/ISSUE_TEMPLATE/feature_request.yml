@@ -1,0 +1,39 @@
+name: Feature request
+description: Propose a real multi-computer workflow improvement
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for helping make multi-computer work easier. Never include credentials, private IPs, hostnames or clipboard contents.
+  - type: textarea
+    id: pain
+    attributes:
+      label: What slows you down today?
+      description: Describe the real task, not only the proposed feature.
+    validations:
+      required: true
+  - type: dropdown
+    id: workflow
+    attributes:
+      label: Workflow
+      options: [Development or vibe coding, IT support, Cross-platform lab, Content creation, Home office, Other]
+    validations:
+      required: true
+  - type: input
+    id: systems
+    attributes:
+      label: Operating-system combination
+      placeholder: Windows 11 server + macOS client
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Ideal outcome
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Security or privacy considerations
