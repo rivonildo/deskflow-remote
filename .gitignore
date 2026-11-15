@@ -1,0 +1,15 @@
+# Generated and sensitive deployment state
+*.log
+*.pem
+*.key
+*.crt
+*.pfx
+*.p12
+*.token
+.env
+.env.*
+!.env.example
+config.local.*
+install-state.json
+.DS_Store
+Thumbs.db

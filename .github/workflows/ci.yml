@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Run repository tests
+        run: chmod +x install.sh tests/test.sh && ./tests/test.sh
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: ShellCheck
+        run: shellcheck install.sh tests/test.sh
+
+  powershell:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Parse PowerShell installer
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $errors = $null
+          [void][System.Management.Automation.Language.Parser]::ParseFile(
+            (Resolve-Path .\install.ps1), [ref]$tokens, [ref]$errors
+          )
+          if ($errors.Count -gt 0) { $errors | Format-List; exit 1 }
+      - name: Exercise dry-run server mode
+        shell: powershell
+        run: .\install.ps1 -Role server -ScreenName server -Client client-a,client-b -NonInteractive -DryRun -NoStart
+      - name: Exercise dry-run client mode
+        shell: powershell
+        run: .\install.ps1 -Role client -Server server.example -ScreenName client-a -Port 24801 -NonInteractive -DryRun -NoStart
+      - name: Reject missing Tailscale in non-interactive mode
+        shell: powershell
+        run: |
+          try {
+            .\install.ps1 -Role server -ScreenName server -Transport tailscale -NonInteractive -DryRun -NoStart
+            throw 'missing Tailscale was accepted'
+          } catch {
+            if ($_.Exception.Message -eq 'missing Tailscale was accepted') { throw }
+          }
+      - name: Reject duplicate clients
+        shell: powershell
+        run: |
+          try {
+            .\install.ps1 -Role server -ScreenName server -Client client-a,client-a -NonInteractive -DryRun -NoStart
+            throw 'duplicate clients were accepted'
+          } catch {
+            if ($_.Exception.Message -eq 'duplicate clients were accepted') { throw }
+          }
+      - name: Verify GUI-only launch and fail-closed firewall logic
+        shell: powershell
+        run: |
+          $text = Get-Content .\install.ps1 -Raw
+          if ($text -match 'Start-Process\s+-FilePath\s+\$roleExe') { throw 'direct core launch found' }
+          if ($text -notmatch "Find-DeskflowNamed 'deskflow-server\.exe'") { throw 'exact server executable discovery missing' }
+          if ($text -notmatch 'No firewall rule was created') { throw 'fail-closed firewall behavior missing' }

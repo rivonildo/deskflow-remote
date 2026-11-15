@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a reproducible setup or workflow failure
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Sanitize logs. Do not include credentials, authentication URLs, hostnames, private IPs, fingerprints or clipboard contents.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: input
+    id: systems
+    attributes:
+      label: Server and client operating systems
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Deskflow and project versions
+    validations:
+      required: true
+  - type: dropdown
+    id: transport
+    attributes:
+      label: Transport
+      options: [LAN, Tailscale, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Sanitized reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Sanitized doctor output
